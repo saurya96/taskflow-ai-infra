@@ -70,7 +70,7 @@ Open `https://localhost:8080` and use the `admin` account with the retrieved pas
 
 ## Configure the application
 
-Replace `OWNER` in [taskflow-ai.yaml](argocd/applications/taskflow-ai.yaml) and in base image references with the real GitHub owner/repository values. Create the repository in Argo CD or through the dashboard, then apply:
+The production and staging Argo CD applications already use `https://github.com/saurya96/taskflow-ai-infra.git`, and the base deployments use `ghcr.io/saurya96/taskflow-ai/*`. Create the repository in Argo CD or through the dashboard, then apply:
 
 ```bash
 kubectl apply -f argocd/applications/taskflow-ai.yaml
@@ -88,8 +88,10 @@ Capture the Argo CD application list and `taskflow-ai-production` tree only afte
 
 The application repository CI workflow may push SHA tags to GHCR and update `kubernetes/base/deployments.yaml` through a PAT. Configure:
 
-- `INFRA_REPO_PAT`: read/write PAT for this repository
-- `INFRA_REPO_URL`: repository URL such as `github.com/OWNER/taskflow-ai-infra.git`
+- `INFRA_REPO_PAT` secret: fine-grained PAT with Read and Write access to `saurya96/taskflow-ai-infra` Contents
+- `INFRA_REPO_URL` variable: `https://github.com/saurya96/taskflow-ai-infra.git` (the workflow has this default)
+
+Create a fine-grained PAT in GitHub under Settings → Developer settings → Personal access tokens, limit it to the infrastructure repository, and grant Contents: Read and write. Add it as a repository Actions secret named `INFRA_REPO_PAT`; never paste it into source or chat.
 
 ## Validation
 
