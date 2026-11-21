@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: ghcr.io/OWNER/taskflow-ai/frontend:main
+          image: ghcr.io/saurya96/taskflow-ai/frontend:main
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
@@ -56,7 +56,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: ghcr.io/OWNER/taskflow-ai/backend:main
+          image: ghcr.io/saurya96/taskflow-ai/backend:main
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 5000
@@ -116,7 +116,7 @@ spec:
     spec:
       containers:
         - name: worker
-          image: ghcr.io/OWNER/taskflow-ai/worker:main
+          image: ghcr.io/saurya96/taskflow-ai/worker:main
           imagePullPolicy: IfNotPresent
           env:
             - name: REDIS_HOST
@@ -140,3 +140,19 @@ spec:
             limits:
               cpu: "1"
               memory: 512Mi
+          readinessProbe:
+            exec:
+              command:
+                - python
+                - -c
+                - "import redis,os; redis.Redis(host=os.getenv('REDIS_HOST','redis'),port=int(os.getenv('REDIS_PORT','6379')),password=os.getenv('REDIS_PASSWORD')).ping()"
+            initialDelaySeconds: 10
+            periodSeconds: 15
+          livenessProbe:
+            exec:
+              command:
+                - python
+                - -c
+                - "import redis,os; redis.Redis(host=os.getenv('REDIS_HOST','redis'),port=int(os.getenv('REDIS_PORT','6379')),password=os.getenv('REDIS_PASSWORD')).ping()"
+            initialDelaySeconds: 30
+            periodSeconds: 30

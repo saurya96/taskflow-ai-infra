@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/OWNER/taskflow-ai-infra.git
+    repoURL: https://github.com/saurya96/taskflow-ai-infra.git
     targetRevision: main
     path: kubernetes/overlays/production
   destination:
